@@ -223,7 +223,7 @@ mysql>
 
 小动物数据库很简单（我们故意的），但是并不难联想到类似数据库的真实使用场景。例如，农民可以使用这样的数据库来跟踪牲畜，或者是兽医跟踪患者记录。你能在MySQL的网站上找到一个包含了一些查询和简单数据小动物园版本。你能在 https://dev.mysql.com/doc/ 上找到Zip和tar两种版本。
 
-使用 <u>**SHOW**</u> 来显示当前服务器上的数据库：
+使用 <u><b>SHOW</b></u> 来显示当前服务器上的数据库：
 ```shell
 mysql> SHOW DATABASES;
 +----------+
@@ -236,14 +236,14 @@ mysql> SHOW DATABASES;
 ```
 mysql数据库描述了用户访问权限。test数据库通常作为用户实验的工作区。
 
-这里表明的数据库列表可能和你机器上的不一样；你无法通过<u> **SHOW DATABASES** </u>看到你没有<u> **SHOW DATABASES** </u>权限的数据库。参看章节13.7.6.14，“SHOW DATABASES语法”。
+这里表明的数据库列表可能和你机器上的不一样；你无法通过<u><b>SHOW DATABASES</b></u>看到你没有<u><b>SHOW DATABASES</b></u>权限的数据库。参看章节13.7.6.14，“SHOW DATABASES语法”。
 
 如果存在test数据库，请尝试访问它：
 ```shell
 mysql> USE test
 Database changed
 ```
-<u> **USE** </u>，和 **QUIT**类似，不需要分号。（你也可以通过分号终止这个语句；这没有坏处）<u> **USE** </u>语句也有特殊的地方：该语句必须在同一行上。
+<u><b>USE</b></u>，和 **QUIT**类似，不需要分号。（你也可以通过分号终止这个语句；这没有坏处）<u><b>USE</b></u>语句也有特殊的地方：该语句必须在同一行上。
 
 你可以使用测试数据来完成后面的示例（如果你有权访问它），但是你在数据库中创建的任何内容都可以被有权访问它的任何人删除。因此，你可能需要你的MySQL管理员允许i使用自己的数据库。假设你需要访问你的小动物园。管理员需要执行如下语句：
 ```shell
@@ -252,6 +252,29 @@ mysql> GRANT ALL ON menagerie.* TO 'your_mysql_name'@'your_client_host';
 其中your_mysql_name是分配给您的MySQL用户名，your_client_host是连接到服务器的主机。
 
 ### 3.3.1 创建和选择数据库
+如果你的管理员在设置权限的时候为你创建了数据，你可以立即使用。否则你就要自己创建
+```shell
+mysql> CREATE DATABASE menagerie;
+```
+Unix中，数据库名称是区分大小写的（与SQL关键字不同），所以你必须将数据库命名为 **menagerie** ，而不是 **Menagerie** ， **MENAGERIE** ，或其他变体。表名也是如此。（Windows下没有这个限制，但是在给定的查询中引用数据库和表时，你需要保持一致的大小写。最佳的做法就是使用和创建数据库时一样的大小写。）
+> 注意
+>  如果你遇到一个错误提示，如 <b>ERROR 1044 (42000): Access denied for user 'micah'@'localhost' to database 'menagerie' </b>，这意味着你的账号没有必要的权限。请与管理员商量，或是参看6.2章，“MySQL访问权限系
+
+创建一个数据库并不会将它选中，你需要明确声明。要选择小动物园为当前数据库，使用如下语句：
+```shell
+mysql> USE menagerie
+Database changed
+```
+你的数据库只需要创建一次，但每次mysql会话你都需要选择它才能使用。你可以像例子中那样，通过使用<u><b>USE</b></u>语句来完成选中。或者在命令行调用mysql时指定。你只需要在连接参数之后指定其名称。例如：
+```shell
+shell> mysql -h host -u user -p menagerie
+Enter password: ********
+```
+> 重要
+> 命令中的<b>menagerie</b><b>不是</b>你的密码。如果你需要在命令行中通过<b>-p</b>输入密码，就不能在中间留有空格（如，<b>-ppassword</b>而不是<b>-p password</b>）。但是并不建议在命令行中输入密码，因为这么做会将密码暴露给在这台计算机上登录的其他用户。
+
+> 注意
+> 你可以使用<u><b>SELECT</b></u> <u><b>DATABASE()</b></u>来查看当前选中的数据库。
 
 ### 3.3.2 创建表
 ### 3.3.3 将数据加载到表中
