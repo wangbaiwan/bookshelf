@@ -58,14 +58,12 @@ Type 'help;' or '\h' for help. Type '\c' to clear the buffer.
 
 mysql>
 ```
-
 **mysql>** 提示符是告诉你mysql已经准备好输入SQL语句了
 
 如果你在运行MySQL的同一台计算机上登录，则可以省略主机，只需使用以下命令：
 ```shell
 > mysql -u user -p
 ```
-
 当你尝试登录，得到一条类似 **ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/tmp/mysql.sock' (2)** 的提示，这意味着MySQL服务器 守护程序（Unix）或服务（Windows）未运行。请咨询管理员或参阅第2章“安装和升级MySQL”中你操作系统对应的内容。
 
 如果登录过程中遇到其他问题，参看第B.6.2节“使用MySQL程序时的常见错误”。
@@ -74,13 +72,11 @@ mysql>
 ```shell
 > mysql
 ```
-
 成功连接后，你可以随时在 **mysql>** 提示符下键入 **QUIT** （或 **\ q** ）来断开连接：
 ```shell
 mysql> QUIT
 Bye
 ```
-
 在Unix上，你也可以通过按Control + D断开连接。
 
 后续章节中大多数示例都假定你已连接到服务器。 它们通过 **mysql>** 提示符表明这一点。
@@ -115,7 +111,6 @@ mysql> SELECT VERSION(), CURRENT_DATE;
 mysql> select version(), current_date;
 mysql> SeLeCt vErSiOn(), current_DATE;
 ```
-
 这是另一个查询。 它演示了你可以将mysql用作简单的计算器：
 ```shell
 mysql> SELECT SIN(PI()/4), (4+1)*5;
@@ -158,7 +153,6 @@ mysql> SELECT
 | jon@localhost | 2018-08-24   |
 +---------------+--------------+
 ```
-
 在此示例中，请注意在输入多行查询的第一行后，提示符是如何从 **mysql>** 更改为 **- >** 的。 这就是mysql表明它还没有看到完整的声明的方式，并且正在等待其余的声明。 提示符是你的好友，因为它提供了有价值的反馈。 如果您使用该反馈，您始终可以了解mysql正在等待什么。
 
 如果您决定不想执行正在输入的查询，请通过键入 **\ c** 取消它：
@@ -168,7 +162,6 @@ mysql> SELECT
     -> \c
 mysql>
 ```
-
 也请注意这里的提示符。 键入\ c后，它会切换回mysql>，提供反馈以指示mysql已为新查询做好准备。
 下表显示了您可能看到的每个提示，并总结了它们所代表的mysql状态。
 Prompt | Meaning
@@ -185,7 +178,6 @@ mysql> | 准备接受一个新查询
 mysql> SELECT USER()
     ->
 ```
-
 如果你遇到这种情况（你认为你已经输入了一个语句，但唯一的响应是 **- >** 提示符），很可能mysql正在等待分号。 如果您没有注意到提示告诉您的内容，您可能会在那里坐一会儿，然后才意识到您需要做什么。 输入分号以完成语句，mysql执行它：
 ```shell
 mysql> SELECT USER()
@@ -196,13 +188,11 @@ mysql> SELECT USER()
 | jon@localhost |
 +---------------+
 ```
-
 在字符串收集期间出现 **'>** 和 **">** 提示（另一种说法是MySQL正在等待字符串的完成）。在MySQL中，您可以编写由 **'** 或 **"** 字符包围的字符串（例如，'hello'或"goodbye"），mysql允许你输入跨越多行的字符串。 当您看到 **'>** 或 **">** 提示符时，表示您输入的行包含以 **'** 或 **"** 引号字符开头的字符串，但尚未输入终止字符串的匹配引号。 这通常表明您无意中遗漏了引号字符。 例如：
 ```shell
 mysql> SELECT * FROM my_table WHERE name = 'Smith AND age < 30;
     '>
 ```
-
 如果输入这个SELECT语句，按Enter键并等待结果，却没有任何反应。 我们应该请注意'>提示提供的线索，而不是想知道为什么这个查询花了这么长时间。 它告诉你mysql希望看到未终止的字符串的其余部分。 （您是否在语句中看到错误？字符串'Smith缺少第二个单引号。）
 
 这种情况你该怎么办呢？ 最简单的方法是取消查询。 然而这种情况下，您不能只键入\ c，因为mysql会将其解释为它正在收集的字符串的一部分。 应该输入结束引号字符（所以mysql知道你已经完成了字符串），然后键入\ c：
@@ -211,7 +201,6 @@ mysql> SELECT * FROM my_table WHERE name = 'Smith AND age < 30;
     '> '\c
 mysql>
 ```
-
 提示符变回mysql>，表示mysql已准备好进行新查询。
 
 **\`>** 提示符类似于 **'>** 和 **">** 提示符，但表示您已经开始但未完成反引号引用的标识符。
@@ -245,7 +234,6 @@ mysql> SHOW DATABASES;
 | tmp      |
 +----------+
 ```
-
 mysql数据库描述了用户访问权限。test数据库通常作为用户实验的工作区。
 
 这里表明的数据库列表可能和你机器上的不一样；你无法通过<u> **SHOW DATABASES** </u>看到你没有<u> **SHOW DATABASES** </u>权限的数据库。参看章节13.7.6.14，“SHOW DATABASES语法”。
@@ -255,7 +243,6 @@ mysql数据库描述了用户访问权限。test数据库通常作为用户实�
 mysql> USE test
 Database changed
 ```
-
 <u> **USE** </u>，和 **QUIT**类似，不需要分号。（你也可以通过分号终止这个语句；这没有坏处）<u> **USE** </u>语句也有特殊的地方：该语句必须在同一行上。
 
 你可以使用测试数据来完成后面的示例（如果你有权访问它），但是你在数据库中创建的任何内容都可以被有权访问它的任何人删除。因此，你可能需要你的MySQL管理员允许i使用自己的数据库。假设你需要访问你的小动物园。管理员需要执行如下语句：
@@ -263,7 +250,9 @@ Database changed
 mysql> GRANT ALL ON menagerie.* TO 'your_mysql_name'@'your_client_host';
 ```
 其中your_mysql_name是分配给您的MySQL用户名，your_client_host是连接到服务器的主机。
+
 ### 3.3.1 创建和选择数据库
+
 ### 3.3.2 创建表
 ### 3.3.3 将数据加载到表中
 ### 3.3.4 从表中检索信息
