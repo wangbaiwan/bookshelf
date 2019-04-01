@@ -330,7 +330,56 @@ mysql> DESCRIBE pet;
 
 更多关于MySQL数据类型的内容，参看11章，数据类型。
 ### 3.3.3 将数据加载到表中
+表创建好了，接下来需要填充它。<u><b>LOAD DATA</b></u>语句和<u><b>INSERT</b></u>语句很有效。
+
+假设你的宠物记录如下所示。（注意MySQL希望日期格式为'YYYY-MM-DD'，这可能与你使用的不一样）
+name | owner | species | sex | birth | death
+---- | ---- | ---- | ---- | ---- | -----
+Fluffy | Harold | cat | f | 1993-02-04 |
+Claws | Gwen | cat | m | 1994-03-17 |
+Buffy | Harold | dog | f | 1989-05-13 |
+Fang | Benny | dog | m | 1990-08-27 |
+Bowser | Diane | dog | m | 1979-08-31 | 1995-07-29
+Chirpy | Gwen | bird | f | 1998-09-11 |
+Whistler | Gwen | bird | | 1997-12-09 |
+Slim | Benny | snake | m | 1996-04-29
+由于你使用的是空表，有种简单的填充方式就是创建一个包含多行宠物信息的文本文件，然后用一条语句加载这个文件的内容。
+
+你可以创建一个每行都包含一条宠物记录的 **pet.txt** 文件，每行的值按<u><b>CREATE TABLE</b></u>语句创建时列所对应的顺序排列，中间由制表符分割。如果有缺失的值（例如未知的性别，或是宠物还活着，没有死亡日期），可以使用NULL。如果要在文本文件中表示缺失值，请使用\N（反斜杠，大写N）。例如Whistler的宠物鸟的记录就可以这么写（单个空格代表制表符）
+```
+Whistler	Gwen	bird	\N	1997-12-09	\N
+```
+使用以下语句将 **pet.txt** 文件加载到 **pet** 表：
+```shell
+mysql> LOAD DATA LOCAL INFILE '/path/pet.txt' INTO TABLE pet;
+```
+如果你是在Windows上使用以 **\r\n** 作为换行符的编辑器创建的文件，那么使用以下语句
+```shell
+mysql> LOAD DATA LOCAL INFILE '/path/pet.txt' INTO TABLE pet
+       LINES TERMINATED BY '\r\n';
+```
+（在运行OS X的苹果设备上，你可能要使用 **LINES TERMINATED BY '\r'** 。）
+
+如果需要，你可以在<u><b>LOAD DATA</b></u>语句中指定分隔符和换行符，默认为制表符和??
+
+如果语句执行失败，可能是因为你的MySQL默认没有启用本地文件的功能。参看6.1.6节，“LOAD DATA LOCAL的安全问题”。
+
+当你要一次添加一条记录时，<u><b>INSERT</b></u>语句很有效。最简单的例子就是，按照<u><b>CREATE TABLE</b></u>语句中的顺序给每列提供值。假设Diane新入手一只名叫“Puffball”的仓鼠。你能通过如下语句新增一条记录：
+```shell
+mysql> INSERT INTO pet
+       VALUES ('Puffball','Diane','hamster','f','1999-03-30',NULL);
+```
+字符和日期类型的值在这里都用带引号的字符串指定。此外，你可以在<u><b>INSERT</b></u>中使用 **NULL** 值代表缺失值，而不是像<u><b>LOAD DATA</b></u>那样使用 **\N**
+
+从这个例子中可以看出，使用多个<u><b>INSERT</b></u>语句加载记录比使用<u><b>LOAD DATA</b></u>语句需要更多的输入。
 ### 3.3.4 从表中检索信息
+使用<u><b>SELECT</b></u>语句从表中获取数据，通常格式如下：
+```shell
+SELECT what_to_select
+FROM which_table
+WHERE conditions_to_satisfy;
+```
+***what_to_select*** 代表你要查看的内容。这可能是多个列，或是\*代表全部的列。 ***which_table*** 代表你想查看的表。**WHERE** 子句是可选的，如果有， ***conditions_to_satisfy*** 指定数据必须满足的一个或多个条件。
 ## 3.4 获取有关数据库和表的信息
 ## 3.5 在批处理模式下使用mysql
 ## 3.6 常见查询示例
